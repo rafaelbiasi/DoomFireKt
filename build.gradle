@@ -1,0 +1,86 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.50"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.50'
+}
+
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'kotlin'
+apply plugin: 'application'
+
+mainClassName = 'br.com.rafaelbiasi.doomfire.DoomFireAppKt'
+
+group 'br.com.rafaelbiasi'
+version '0.0.1-SNAPSHOT'
+
+sourceCompatibility = '11'
+
+repositories {
+    jcenter()
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib'
+    implementation 'com.googlecode.lanterna:lanterna:3.0.1'
+
+    implementation 'org.hexworks.zircon:zircon.core-jvm:2019.1.2-PREVIEW'
+    implementation 'org.hexworks.zircon:zircon.jvm.swing:2019.1.2-PREVIEW'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
+}
+
+test {
+    // Use junit platform for unit tests
+    useJUnitPlatform()
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+eclipse {
+    classpath {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = sourceCompatibility
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = sourceCompatibility
+}
+
+kotlin {
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation kotlin('stdlib-common')
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation kotlin('test-common')
+                implementation kotlin('test-annotations-common')
+            }
+        }
+    }
+}
