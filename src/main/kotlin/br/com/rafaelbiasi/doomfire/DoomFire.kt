@@ -4,9 +4,7 @@ import java.lang.StrictMath.round
 import kotlin.random.Random.Default.nextInt
 
 
-class DoomFire(
-    private val fireWidth: Int = 50, fireHeight: Int = 50
-) {
+class DoomFire(private val fireWidth: Int = 50, fireHeight: Int = 50) {
 
     private val fireIntensityPixels = IntArray(fireWidth * fireHeight)
 
