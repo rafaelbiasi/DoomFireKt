@@ -1,29 +1,28 @@
 package br.com.rafaelbiasi.doomfire
 
-import org.hexworks.zircon.api.AppConfigs
 import org.hexworks.zircon.api.CP437TilesetResources
 import org.hexworks.zircon.api.DrawSurfaces
-import org.hexworks.zircon.api.Positions
-import org.hexworks.zircon.api.Screens
-import org.hexworks.zircon.api.Sizes
 import org.hexworks.zircon.api.SwingApplications
-import org.hexworks.zircon.api.TileColors
-import org.hexworks.zircon.api.Tiles
-import org.hexworks.zircon.api.extensions.onShutdown
+import org.hexworks.zircon.api.application.AppConfig
+import org.hexworks.zircon.api.builder.screen.ScreenBuilder
+import org.hexworks.zircon.api.color.TileColor
+import org.hexworks.zircon.api.data.Position
+import org.hexworks.zircon.api.data.Size
+import org.hexworks.zircon.api.data.Tile
 
 
 class ZirconRender(fireWidth: Int, fireHeight: Int) : Render {
 
     private val tileGrid = SwingApplications.startTileGrid(
-        AppConfigs.newConfig()
-            .withSize(Sizes.create(fireWidth, fireHeight))
+        AppConfig.newBuilder()
+            .withSize(Size.create(fireWidth, fireHeight))
             .withDefaultTileset(CP437TilesetResources.rexPaint8x8())
             .build()
     )
 
     private val image = DrawSurfaces.tileGraphicsBuilder().withSize(tileGrid.size)
 
-    private val screen = Screens.createScreenFor(tileGrid)
+    private val screen = ScreenBuilder.createScreenFor(tileGrid)
 
     private val fireColorsPalette = arrayOf(
         RGB(0, 0, 0), RGB(7, 7, 7)
@@ -51,16 +50,16 @@ class ZirconRender(fireWidth: Int, fireHeight: Int) : Render {
         val color = fireColorsPalette[fireIntensity]
 
         image.withTile(
-            Positions.create(column, row), Tiles.newBuilder()
-                .withForegroundColor(TileColors.create(color.r, color.g, color.b))
-                .withBackgroundColor(TileColors.create(color.r, color.g, color.b))
+            Position.create(column, row), Tile.newBuilder()
+                .withForegroundColor(TileColor.create(color.r, color.g, color.b))
+                .withBackgroundColor(TileColor.create(color.r, color.g, color.b))
                 .withCharacter(' ')
                 .build()
         )
     }
 
     override fun render() {
-        screen.also { it.draw(image.build(), Positions.zero()) }.also { it.display() }
+        screen.also { it.draw(image.build(), Position.zero()) }.also { it.display() }
     }
 
     override fun close() {
