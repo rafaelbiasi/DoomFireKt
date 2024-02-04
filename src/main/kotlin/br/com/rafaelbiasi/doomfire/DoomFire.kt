@@ -1,102 +1,47 @@
 package br.com.rafaelbiasi.doomfire
 
-import java.lang.StrictMath.round
-import kotlin.random.Random.Default.nextInt
+import kotlin.random.Random
 
+class DoomFire(private val fireWidth: Int = 50, private val fireHeight: Int = 50) {
+    private var maxFireIntensity = 37
+    private val fireIntensityPixels = IntArray(fireWidth * fireHeight) { 0 }
 
-class DoomFire(private val fireWidth: Int = 50, fireHeight: Int = 50) {
-
-    private val fireIntensityPixels = IntArray(fireWidth * fireHeight)
-
-    fun start() {
+    init {
         createFireSource()
     }
 
+    fun start() = createFireSource()
+
     fun renderFire(render: Render) {
-        fireIntensityPixels.indices.forEach { setPixelIntensity(render, it) }
+        for (pixelIndex in fireIntensityPixels.indices) {
+            val column = pixelIndex % fireWidth
+            val row = pixelIndex / fireWidth
+            render.setPixel(column, row, fireIntensityPixels[pixelIndex])
+        }
         render.render()
     }
 
-    private fun setPixelIntensity(render: Render, pixelIndex: Int) {
-        val row = pixelIndex / fireWidth
-        val column = pixelIndex - (fireWidth * row)
-        val fireIntensity = fireIntensityPixels[pixelIndex]
-        render.setPixel(column, row, fireIntensity)
-    }
-
     fun doFire() {
-        fireIntensityPixels.indices.forEach(::spreadFire)
+        for (pixelIndex in 0 until fireWidth * (fireHeight - 1)) {
+            spreadFire(pixelIndex)
+        }
     }
 
-    private fun spreadFire(currentPixelIndex: Int) {
-        val belowPixelIndex = currentPixelIndex + fireWidth
-        val lastPixelIndex = fireIntensityPixels.indices.last
-
-        if (belowPixelIndex >= lastPixelIndex) return
-
-        val decay = nextInt(round(3f * 2f))
-        val windForce = -decay / 3
-
-        val belowPixelFireIntensity = fireIntensityPixels[belowPixelIndex]
-        val newFireIntensity = if (belowPixelFireIntensity - decay >= 0) belowPixelFireIntensity - decay else 0
-
-        if (currentPixelIndex + windForce >= 0 && currentPixelIndex - windForce <= lastPixelIndex)
-            fireIntensityPixels[currentPixelIndex + windForce] = newFireIntensity
+    private fun spreadFire(pixelIndex: Int) {
+        val decay = Random.nextInt(3)
+        val belowPixelIndex = pixelIndex + fireWidth
+        if (belowPixelIndex < fireIntensityPixels.size) {
+            val windDirection = decay - 1 // Adjusts wind effect
+            val targetIndex = (pixelIndex + windDirection).coerceIn(0, fireIntensityPixels.lastIndex)
+            val newIntensity = (fireIntensityPixels[belowPixelIndex] - decay).coerceIn(0, maxFireIntensity)
+            fireIntensityPixels[targetIndex] = newIntensity
+        }
     }
 
     private fun createFireSource() {
-        val lastPixelIndex = fireIntensityPixels.indices.last
-        val fistPixelLastRow = lastPixelIndex - fireWidth
-
-        (0..fireWidth).forEach { column ->
-            val sourcePixelIndex = fistPixelLastRow + column
-
-            fireIntensityPixels[sourcePixelIndex] = 37
-        }
-    }
-
-    private fun destroyFireSource() {
-        val lastPixelIndex = fireIntensityPixels.indices.last
-        val fistPixelLastRow = lastPixelIndex - fireWidth
-
-        (0..fireWidth).forEach { column ->
-            val pixelIndex = fistPixelLastRow + column
-            fireIntensityPixels[pixelIndex] = 0
-        }
-    }
-
-    private fun increaseFireSource() {
-        val lastPixelIndex = fireIntensityPixels.indices.last
-        val fistPixelLastRow = lastPixelIndex - fireWidth
-
-        (0..fireWidth).forEach { column ->
-            val pixelIndex = fistPixelLastRow + column
-            val currentFireIntensity = fireIntensityPixels[pixelIndex]
-
-            if (currentFireIntensity < 37) {
-                val increase = nextInt(14)
-                val newFireIntensity =
-                    if (currentFireIntensity + increase >= 37) 37 else currentFireIntensity + increase
-
-                fireIntensityPixels[pixelIndex] = newFireIntensity
-            }
-        }
-    }
-
-    private fun decreaseFireSource() {
-        val lastPixelIndex = fireIntensityPixels.indices.last
-        val fistPixelLastRow = lastPixelIndex - fireWidth
-
-        (0..fireWidth).forEach { column ->
-            val pixelIndex = fistPixelLastRow + column
-            val currentFireIntensity = fireIntensityPixels[pixelIndex]
-
-            if (currentFireIntensity > 0) {
-                val decay = nextInt(14)
-                val newFireIntensity = if (currentFireIntensity - decay >= 0) currentFireIntensity - decay else 0
-
-                fireIntensityPixels[pixelIndex] = newFireIntensity
-            }
+        val startIndex = fireWidth * (fireHeight - 1)
+        for (i in startIndex until startIndex + fireWidth) {
+            fireIntensityPixels[i] = maxFireIntensity
         }
     }
 }

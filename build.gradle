@@ -33,17 +33,14 @@ repositories {
 
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
-    implementation 'com.googlecode.lanterna:lanterna:3.0.1'
 
-    implementation 'org.hexworks.zircon:zircon.core-jvm:2022.1.0-RELEASE'
-    implementation 'org.hexworks.zircon:zircon.jvm.swing:2022.1.0-RELEASE'
+    implementation 'com.googlecode.lanterna:lanterna:3.1.2'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
 }
 
 test {
-    // Use junit platform for unit tests
     useJUnitPlatform()
 }
 
