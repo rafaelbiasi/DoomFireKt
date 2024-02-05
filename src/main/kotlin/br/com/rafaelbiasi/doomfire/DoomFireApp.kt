@@ -1,8 +1,8 @@
 package br.com.rafaelbiasi.doomfire
 
 fun main() {
-    val pixelWidth = 8
-    val pixelHeight = 8
+    val pixelWidth = 4
+    val pixelHeight = 4
     val widthRatio = 16
     val heightRatio = 9
     val sizeMultiplication = 100
