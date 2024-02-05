@@ -7,10 +7,6 @@ class DoomFire(private val fireWidth: Int = 50, private val fireHeight: Int = 50
     private val windForceDirection = -1
     private val fireIntensityPixels = IntArray(fireWidth * fireHeight) { 0 }
 
-    init {
-        createFireSource()
-    }
-
     fun start() = createFireSource()
 
     fun renderFire(render: Render) {
