@@ -2,29 +2,24 @@ buildscript {
     repositories {
         mavenCentral()
     }
-
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21"
-    }
 }
 
 plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.9.23'
     id 'java'
     id 'java-library'
-    id 'org.jetbrains.kotlin.jvm' version '1.6.21'
+    id 'idea'
+    id 'eclipse'
+    id 'application'
 }
 
-apply plugin: 'idea'
-apply plugin: 'eclipse'
-apply plugin: 'kotlin'
-apply plugin: 'application'
-
-mainClassName = 'br.com.rafaelbiasi.doomfire.DoomFireAppKt'
+java {
+    mainClassName = 'br.com.rafaelbiasi.doomfire.DoomFireAppKt'
+    sourceCompatibility = '21'
+}
 
 group 'br.com.rafaelbiasi'
 version '0.0.1-SNAPSHOT'
-
-sourceCompatibility = '17'
 
 repositories {
     mavenCentral()
