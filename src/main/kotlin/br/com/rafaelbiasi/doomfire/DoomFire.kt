@@ -1,5 +1,7 @@
 package br.com.rafaelbiasi.doomfire
 
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.random.Random
 
 class DoomFire(private val fireWidth: Int = 50, private val fireHeight: Int = 50) {
@@ -27,14 +29,20 @@ class DoomFire(private val fireWidth: Int = 50, private val fireHeight: Int = 50
 
 
     private fun spreadFire(pixelIndex: Int) {
-        val decay = Random.nextInt(3)
-        val belowPixelIndex = pixelIndex + fireWidth
-        if (belowPixelIndex < fireIntensityPixels.size) {
-            val windDirection: Int = decay + windForceDirection
-            val targetIndex = (pixelIndex + windDirection).coerceIn(0, fireIntensityPixels.lastIndex)
-            val newIntensity = (fireIntensityPixels[belowPixelIndex] - decay).coerceIn(0, maxFireIntensity)
-            fireIntensityPixels[targetIndex] = newIntensity
+        val belowPixelIndex: Int = pixelIndex + fireWidth
+        if (belowPixelIndex >= fireIntensityPixels.size) {
+            return
         }
+        val decay: Int = Random.nextInt(3) and 3
+        val targetIndex = min(
+            max((pixelIndex + decay + windForceDirection), 0),
+            fireIntensityPixels.size - 1
+        )
+        val newIntensity = min(
+            max((fireIntensityPixels[belowPixelIndex] - (decay and 1)), 0),
+            maxFireIntensity
+        )
+        fireIntensityPixels[targetIndex] = newIntensity
     }
 
     private fun createFireSource() {
