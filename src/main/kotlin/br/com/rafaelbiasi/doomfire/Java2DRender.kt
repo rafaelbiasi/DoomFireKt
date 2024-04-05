@@ -69,7 +69,7 @@ class Java2DRender(
         frame.isVisible = true
     }
 
-    override fun setPixel(column: Int, row: Int, state: Int) {
+    override fun setPixel(row: Int, column: Int, state: Int) {
         if (column < 0 || column >= width || row < 0 || row >= height) return
 
         if (pixelStates[row][column] != state) {
@@ -77,10 +77,9 @@ class Java2DRender(
             val color = fireColorsPalette[state]
             val graphics = canvas.graphics
             graphics.color = color
-            graphics.fillRect(column * pixelWidth, row * pixelHeight, pixelWidth, pixelHeight)
+            graphics.fillRect(row * pixelHeight, column * pixelWidth, pixelWidth, pixelHeight)
         }
     }
-
 
     override fun setPixel(pixelIndex: Int, state: Int) {
         val column = pixelIndex % width

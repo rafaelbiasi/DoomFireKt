@@ -4,7 +4,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
 
-class DoomFire(private val fireWidth: Int = 50, private val fireHeight: Int = 50) {
+class DoomFire(val fireWidth: Int = 50, val fireHeight: Int = 50) {
     private var maxFireIntensity = 37
     private val windForceDirection = -1
     private val fireIntensityPixels = IntArray(fireWidth * fireHeight) { 0 }
@@ -13,13 +13,10 @@ class DoomFire(private val fireWidth: Int = 50, private val fireHeight: Int = 50
 
     fun renderFire(render: Render) {
         for (pixelIndex in fireIntensityPixels.indices) {
-            val column = pixelIndex % fireWidth
-            val row = pixelIndex / fireWidth
-            render.setPixel(column, row, fireIntensityPixels[pixelIndex])
+            render.setPixel(pixelIndex, fireIntensityPixels[pixelIndex])
         }
         render.render()
     }
-
 
     fun doFire() {
         for (pixelIndex in 0 until fireWidth * (fireHeight - 1)) {
@@ -27,13 +24,12 @@ class DoomFire(private val fireWidth: Int = 50, private val fireHeight: Int = 50
         }
     }
 
-
     private fun spreadFire(pixelIndex: Int) {
         val belowPixelIndex: Int = pixelIndex + fireWidth
         if (belowPixelIndex >= fireIntensityPixels.size) {
             return
         }
-        val decay: Int = Random.nextInt(3) and 3
+        val decay: Int = Random.nextInt(256) and 3
         val targetIndex = min(
             max((pixelIndex + decay + windForceDirection), 0),
             fireIntensityPixels.size - 1
